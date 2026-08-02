@@ -20,9 +20,9 @@ class Figure:
     unit = 'cm'
     def __init__(self):
         pass
-    def calculate_area():
+    def calculate_area(self):
         pass
-    def info():
+    def info(self):
         pass
 
 class Circle(Figure):
@@ -52,6 +52,3 @@ figure_list = Circle(5), Circle(6), RightTriangle(4,6), RightTriangle(3,4), Righ
 
 for i in figure_list:
     i.info()
-
-# 13. В исполняемом файле создать список из 2-х разных кругов и 3-х разных треугольников
-# 14. Затем через цикл вызвать у всех объектов списка метод info
