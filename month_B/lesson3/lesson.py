@@ -1,8 +1,34 @@
-class Car:
+from enum import Enum
+
+class Color(Enum):
+    RED = '\033[31m'
+    BLUE = '\033[34m'
+    YELLOW = '\033[33m'
+    GREEN = '\033[32m'
+
+class MusicPlayable:
+    @staticmethod
+    def play_music(song):
+        print(f'Now is playing{song}')
+
+    @staticmethod
+    def stop_music():
+        print('Music stop')
+
+
+class Drawble:
+    @staticmethod
+    def draw(emoji):
+        print(emoji)
+
+class Car(MusicPlayable, Drawble):
     def __init__(self, model, year, color):
         self.__model = model
         self.__year = year
-        self.__color = color
+
+        if type(color) == Color:
+            self.__color = color
+
 
     @property
     def model(self):
@@ -24,17 +50,32 @@ class Car:
         print(f' Car {self.__model} is driving')
 
     def __str__(self):
-        return f'MODEL: {self.__model} YEAR: {self.__year} COLOR: {self.__color}'
+        return f'MODEL: {self.__model} YEAR: {self.__year} COLOR: {self.__color.value}' + '\033[0m'
+
 
     def __gt__(self, other):
         return self.__year > other.__year
-
+    
 
 class FuelCar(Car):
+    __total_fuel_amount = 1000
+
+    @staticmethod
+    def get_fuel_type():
+        return 'AI 95'
+    @classmethod
+    def get_total_fuel_amount(cls):
+        return cls.__total_fuel_amount
+    @classmethod
+    def fill_total_fuel_amount(cls, amount):
+        cls.__total_fuel_amount += amount
+
+    
+
     def __init__(self, model, year, color, fuel_bank):
         Car.__init__(self, model, year, color)
         self.__fuel_bank = fuel_bank
-
+        FuelCar.__total_fuel_amount -= fuel_bank
     @property
     def fuel_bank(self):
         return self.__fuel_bank
@@ -70,18 +111,23 @@ class HybridCar(ElectricCar, FuelCar):
         FuelCar.__init__(self, model, year, color, fuel_bank)
         ElectricCar.__init__(self, model, year, color, battery)
 
-car = Car('BMW X6', 2020, 'Red')
+class SmartPhone(MusicPlayable, Drawble):
+    pass
+
+
+print(f'We have {FuelCar.get_total_fuel_amount()}')
+car = Car('BMW X6', 2020, Color.BLUE)
 print(car)
 
-nissan_car = FuelCar('Nissan Patrol', 2009, 'Silver', 85)
+nissan_car = FuelCar('Nissan Patrol', 2009, Color.RED, 85)
 print(nissan_car)
 nissan_car.drive()
 
-tesla_car = ElectricCar('Tesla Model X', 2023, 'Black', 25000)
+tesla_car = ElectricCar('Tesla Model X', 2023, Color.YELLOW, 25000)
 print(tesla_car)
 
 
-prius_car = HybridCar('Toyota Prius', 2000, 'Blue', 65, 15000)
+prius_car = HybridCar('Toyota Prius', 2000, Color.GREEN, 65, 15000)
 print(prius_car)
 
 prius_car.drive()
@@ -97,3 +143,27 @@ print(f'Number one is bigger than number two? --> {number1 > number2}')
 
 
 print(f'Nissan car is better than Tesla car --> {nissan_car > tesla_car}')
+
+FuelCar.fill_total_fuel_amount(500)
+# FuelCar.total_fuel_amount -= 100
+print(f'We have {FuelCar.get_total_fuel_amount()} ({FuelCar.get_fuel_type()})')
+
+
+tesla_car.play_music('song1')
+tesla_car.stop_music()
+
+samsung = SmartPhone()
+samsung.play_music(' Best Song')
+
+tesla_car.draw('🏎️')
+
+samsung.draw('📱')
+
+
+if tesla_car.model == 'Tesla Model X':
+    print('This car is cool')
+
+
+
+if tesla_car.color == Color.YELLOW:
+    print('This car is pretty')
