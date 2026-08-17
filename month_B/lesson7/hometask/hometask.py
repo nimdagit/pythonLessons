@@ -127,7 +127,7 @@ connection = create_connection(r".\month_B\lesson7\hometask\hw.db")
 if connection != None:
     print('Successfully connected to DB!')
 
-    create_table_sql =""" CREATE TABLE products(
+    create_table_sql =""" CREATE TABLE IF NOT EXISTS products(
     id integer primary key autoincrement,
     product_title varchar(200) not null,
     price numeric(10, 2) not null default 0.0,
