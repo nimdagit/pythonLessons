@@ -84,7 +84,7 @@ def get_task_keyboard(task_id):
 async def handle_done(callback: types.CallbackQuery):
     split_data = callback.data.split('_')
     if update.update_status(split_data[1]):
-        await callback.answer("Действие обработано: ЗАДАЧА удалена")
+        await callback.answer("Действие обработано: ЗАДАЧА ВЫПОЛНЕНА")
     else:
         await callback.answer("ОШИБКА: Действие обработано не корректно")
     
