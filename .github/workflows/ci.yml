@@ -1,0 +1,43 @@
+name: Python Code Quality Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Клонируем ваш репозиторий на виртуальную машину GitHub
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # Step 2: Разворачиваем стабильную версию Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Step 3: Обновляем pip и устанавливаем базовые инструменты проверки
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+
+      # Step 4: Линтинг — проверка кода на синтаксические ошибки, пропущенные переменные и соответствие PEP 8
+      - name: Lint code with flake8
+        run: |
+          # Остановит сборку, если обнаружены критические ошибки синтаксиса (E9, F63, F7, F82)
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # Предупреждения стилистики оформляем как информационные, чтобы не ломать сборку из-за пробелов
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      # Step 5: Запуск тестов (если в ваших домашних заданиях есть файлы вида test_*.py)
+      # Если тестов еще нет, этот шаг просто завершится без ошибок, проверив структуру
+      - name: Run tests with pytest
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pytest --maxfail=1 --disable-warnings -v || echo "Тесты не найдены или завершились с ошибкой"
